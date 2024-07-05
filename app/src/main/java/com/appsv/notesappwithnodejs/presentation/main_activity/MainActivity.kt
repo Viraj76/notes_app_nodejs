@@ -31,6 +31,7 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         setContent {
             NotesAppWithNodeJSTheme {
+
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -38,6 +39,7 @@ class MainActivity : ComponentActivity() {
                 ){
                     SetupNavHost()
                 }
+
             }
         }
     }

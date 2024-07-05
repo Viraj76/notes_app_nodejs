@@ -1,5 +1,6 @@
 package com.appsv.notesappwithnodejs.presentation.add_notes
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,16 +20,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.appsv.notesappwithnodejs.R
 import com.appsv.notesappwithnodejs.common.components.AppOutlinedTextField
 import com.appsv.notesappwithnodejs.common.components.AppToolBar
+import com.appsv.notesappwithnodejs.domain.models.Notes
 import com.appsv.notesappwithnodejs.presentation.add_notes.component.CustomFilterChip
+import com.appsv.notesappwithnodejs.presentation.navhost.HomeScreen
 
+
+//@Preview(showSystemUi = true)
+//@Composable
+//private fun Prevv() {
+//    AddNoteScreen(navController)
+//}
 
 @Composable
 fun AddNoteScreen(
-    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    state: StateAddNoteScreen,
+    event: (EventAddNoteScreen) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -41,8 +54,14 @@ fun AddNoteScreen(
                 title = "Add Note",
                 navigationIcon = Icons.AutoMirrored.Default.ArrowBack,
                 onNavigationClick = {
+                    navController.navigate(HomeScreen) {
+                        popUpTo(HomeScreen) {
+                            inclusive = true
+                        }
+                    }
                 }
             )
+
             Column(
                 modifier = Modifier.padding(8.dp)
             ) {
@@ -50,18 +69,24 @@ fun AddNoteScreen(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 AppOutlinedTextField(
-                    value = "Note Title",
-                    onValueChange = {},
+                    value = state.notesTitle,
+                    onValueChange = { title ->
+                        event(EventAddNoteScreen.NoteTitle(title))
+                    },
                     maxLines = 2,
+                    label = "Enter note title..."
                 )
 
                 Spacer(modifier = Modifier.height(30.dp))
 
                 AppOutlinedTextField(
-                    value = "Notes Desc",
-                    onValueChange = {},
+                    value = state.notesDescription,
+                    onValueChange = { desc ->
+                        event(EventAddNoteScreen.NoteDescription(desc))
+                    },
                     maxLines = 10,
-                    height = 300.dp
+                    height = 300.dp,
+                    label = "Enter note description..."
                 )
 
                 Spacer(modifier = Modifier.height(15.dp))
@@ -73,30 +98,35 @@ fun AddNoteScreen(
                     CustomFilterChip(
                         label = "Low",
                         color = Color.Green,
-                        selected = false,
+                        selected = state.notesPriority == "Low",
                         onClick = {
+                            event(EventAddNoteScreen.NotePriority("Low"))
                         }
                     )
                     CustomFilterChip(
                         label = "Medium",
                         color = Color.Yellow,
-                        selected = false,
+                        selected = state.notesPriority == "Medium",
                         onClick = {
+                            event(EventAddNoteScreen.NotePriority("Medium"))
                         }
                     )
                     CustomFilterChip(
                         label = "High",
                         color = Color.Red,
-                        selected = false,
+                        selected = state.notesPriority == "High",
                         onClick = {
+                            event(EventAddNoteScreen.NotePriority("High"))
                         }
                     )
 
                 }
             }
         }
+
         FloatingActionButton(
             onClick = {
+                Log.d("NotesDetail" , "${state.notesTitle} , ${state.notesDescription} , ${state.notesPriority}")
             },
             modifier = Modifier
                 .align(Alignment.BottomEnd)

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -18,13 +19,15 @@ fun AppOutlinedTextField(
     value : String,
     onValueChange : (String) -> Unit,
     maxLines : Int = 1,
-    height : Dp = 60.dp
+    height : Dp = 60.dp,
+    label : String
 ) {
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
             .height(height),
         value = value,
+        label = { Text(text = label)},
         onValueChange = { onValueChange(it)},
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = colorResource(id = R.color.medium_blue),
@@ -33,7 +36,6 @@ fun AppOutlinedTextField(
             unfocusedTextColor = colorResource(id = R.color.white),
             focusedContainerColor = colorResource(id = R.color.medium_blue),
             unfocusedContainerColor = colorResource(id = R.color.medium_blue),
-
             ),
         maxLines = maxLines,
         shape = RoundedCornerShape(5.dp)
