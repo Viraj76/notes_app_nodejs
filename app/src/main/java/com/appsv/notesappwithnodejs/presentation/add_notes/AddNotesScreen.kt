@@ -13,9 +13,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -126,7 +128,19 @@ fun AddNoteScreen(
 
         FloatingActionButton(
             onClick = {
-                Log.d("NotesDetail" , "${state.notesTitle} , ${state.notesDescription} , ${state.notesPriority}")
+//                Log.d("NotesDetail" , "${state.notesTitle} , ${state.notesDescription} , ${state.notesPriority}")
+                      val notes = Notes(
+                          noteTitle = state.notesTitle,
+                          noteDescription = state.notesDescription,
+                          notePriority = state.notesPriority
+                      )
+
+                event(EventAddNoteScreen.SaveNote(notes))
+
+
+
+
+
             },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
@@ -140,5 +154,23 @@ fun AddNoteScreen(
             )
         }
 
+        LaunchedEffect(state) {
+            when{
+                state.savingNotes ->{
+                    Log.d("NoteState" , "Screen - Loading...")
+                }
+                state.notesSaved == "Notes Saved!"->{
+                    Log.d("NoteState" , "Screen - Note Saved...")
+                    navController.navigate(HomeScreen) {
+                        popUpTo(HomeScreen) {
+                            inclusive = true
+                        }
+                    }
+                }
+                state.notesError == "Unable to save notes" ->{
+                    Log.d("NoteState" , "Screen - Error...")
+                }
+            }
+        }
     }
 }

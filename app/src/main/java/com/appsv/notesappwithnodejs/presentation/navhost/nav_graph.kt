@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import com.appsv.notesappwithnodejs.presentation.home.HomeScreen
 import com.appsv.notesappwithnodejs.presentation.add_notes.AddNoteScreen
 import com.appsv.notesappwithnodejs.presentation.add_notes.ViewModelAddNoteScreen
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SetupNavHost() {
@@ -27,7 +28,7 @@ fun SetupNavHost() {
         }
 
         composable<AddNoteScreen>{
-            val viewModel = viewModel<ViewModelAddNoteScreen>()
+            val viewModel : ViewModelAddNoteScreen = koinViewModel()
             val state by viewModel.notesState.collectAsState()
 
             AddNoteScreen(

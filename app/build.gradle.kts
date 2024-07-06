@@ -84,4 +84,7 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
 
+    // Koin core features
+    implementation("io.insert-koin:koin-androidx-compose:3.2.0")
+
 }
