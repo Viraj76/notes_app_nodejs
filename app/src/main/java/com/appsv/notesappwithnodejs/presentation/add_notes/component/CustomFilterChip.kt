@@ -17,7 +17,8 @@ fun CustomFilterChip(
     label: String,
     color: Color,
     selected: Boolean,
-    onClick: () -> Unit
+    alphaValue : Float = 0.2f,
+    onClick: () -> Unit,
 ) {
 
     FilterChip(
@@ -25,7 +26,7 @@ fun CustomFilterChip(
         label = {
             Text(
                 label,
-                color = color.copy(alpha = 0.7f)
+                color = color.copy(alpha = 0.8f)
             )
         },
         selected = selected,
@@ -42,10 +43,10 @@ fun CustomFilterChip(
             null
         },
         colors = FilterChipDefaults.filterChipColors().copy(
-            containerColor = color.copy(alpha = 0.2f) ,
+            containerColor = color.copy(alphaValue) ,
             labelColor =color ,
             leadingIconColor = color,
-            selectedContainerColor = color.copy(alpha = 0.2f)
+            selectedContainerColor = color.copy(alphaValue)
         ),
         border = null  // Remove the border
     )
