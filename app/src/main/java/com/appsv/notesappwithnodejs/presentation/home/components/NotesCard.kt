@@ -32,6 +32,17 @@ import com.appsv.notesappwithnodejs.domain.models.Notes
 import com.appsv.notesappwithnodejs.presentation.add_notes.component.CustomFilterChip
 import kotlin.random.Random
 
+
+@Preview
+@Composable
+private fun Prevv() {
+    NotesCard(notes = Notes(
+        noteTitle = "Comprehensive Marketing Strategy Meeting with the Entire Sales and Marketing Team",
+        noteDescription = "every team . Schedule follow-up meetings to track progress and make adjustments as necessary.",
+        notePriority = "High",
+        date = "2024-07-07"
+    ))
+}
 //@Preview
 @Composable
 fun NotesCard(
@@ -103,10 +114,6 @@ fun NotesCard(
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.End
                 )
-
-
-
-
             }
         }
 
