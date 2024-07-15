@@ -35,15 +35,15 @@ import com.appsv.notesappwithnodejs.presentation.add_notes.component.CustomFilte
 import com.appsv.notesappwithnodejs.presentation.navhost.HomeScreen
 
 
-@Preview(showSystemUi = true)
-@Composable
-private fun Prevv() {
-    AddNoteScreen(
-        rememberNavController(),
-        state = StateAddNoteScreen(),
-        event = {}
-    )
-}
+//@Preview(showSystemUi = true)
+//@Composable
+//private fun Prevv() {
+//    AddNoteScreen(
+//        rememberNavController(),
+//        state = StateAddNoteScreen(),
+//        event = {}
+//    )
+//}
 
 @Composable
 fun AddNoteScreen(

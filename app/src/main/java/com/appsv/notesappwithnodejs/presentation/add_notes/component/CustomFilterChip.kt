@@ -3,6 +3,7 @@ package com.appsv.notesappwithnodejs.presentation.add_notes.component
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
@@ -33,7 +34,7 @@ fun CustomFilterChip(
         leadingIcon = if (selected) {
             {
                 Icon(
-                    imageVector = Icons.Filled.Done,
+                    imageVector = Icons.Outlined.Done,
                     contentDescription = "Done icon",
                     tint = color,
                     modifier = Modifier.size(FilterChipDefaults.IconSize)

@@ -13,6 +13,8 @@ interface NotesRepository {
 
       suspend fun filterNotes(priority : String) : Flow<Resource<List<Notes>>>
 
+      suspend fun pinNotes(id : String)
+
 
 }
 

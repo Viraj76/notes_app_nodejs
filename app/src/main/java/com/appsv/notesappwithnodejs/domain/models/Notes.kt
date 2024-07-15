@@ -1,10 +1,14 @@
 package com.appsv.notesappwithnodejs.domain.models
 
+import org.bson.types.ObjectId
+
 
 data class Notes (
+    val _id :String = "",
     val noteTitle : String,
     val noteDescription: String,
     val notePriority: String,
+    var pinned : Boolean = false,
     val date : String ?   = null
 )
 

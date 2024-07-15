@@ -87,4 +87,6 @@ dependencies {
     // Koin core features
     implementation("io.insert-koin:koin-androidx-compose:3.2.0")
 
+    implementation("org.mongodb:bson:4.5.0")
+
 }

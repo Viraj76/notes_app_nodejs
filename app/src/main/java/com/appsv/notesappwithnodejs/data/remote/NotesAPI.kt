@@ -5,6 +5,8 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface NotesAPI {
@@ -19,5 +21,8 @@ interface NotesAPI {
     suspend fun filterNotes(
         @Query("priority")  priority : String
     ) : Response<List<Notes>>
+
+    @PUT("/notes/{id}/update-pin")
+    suspend fun updateNotePin(@Path("id") id: String) // Replace 'Note' with your actual response model
 
 }

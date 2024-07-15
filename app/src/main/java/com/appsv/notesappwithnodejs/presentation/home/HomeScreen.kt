@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -15,6 +16,8 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,6 +32,7 @@ import com.appsv.notesappwithnodejs.domain.models.notesList
 import com.appsv.notesappwithnodejs.presentation.add_notes.component.CustomFilterChip
 import com.appsv.notesappwithnodejs.presentation.home.components.NotesCard
 import com.appsv.notesappwithnodejs.presentation.navhost.AddNoteScreen
+import kotlinx.coroutines.launch
 
 
 //@Preview(showSystemUi = true)
@@ -104,7 +108,7 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            if(isNotesFetched(state)){
+            if(isNotesFetched(state = state)){
                 LazyVerticalStaggeredGrid(
                     columns = StaggeredGridCells.Fixed(2),
                     modifier = Modifier.fillMaxSize(),
@@ -112,8 +116,11 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalItemSpacing = 8.dp
                 ) {
-                    items(state.fetchedNotes!!) {
-                        NotesCard(notes = it)
+                    itemsIndexed(state.fetchedNotes!!) { index, note ->
+                        NotesCard(notes = note) {
+                            // You can use the index here
+                            event(EventHomeScreen.OnPin(note._id , index))
+                        }
                     }
                 }
             }

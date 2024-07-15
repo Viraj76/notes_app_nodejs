@@ -72,4 +72,9 @@ class NotesRepositoryImpl(
         }
     }
 
+    override suspend fun pinNotes(id: String) {
+        notesAPI.updateNotePin(id)
+    }
+
+
 }

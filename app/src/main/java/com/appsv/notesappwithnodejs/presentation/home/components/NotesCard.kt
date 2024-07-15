@@ -9,8 +9,15 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Done
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
@@ -19,9 +26,11 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -32,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import com.appsv.notesappwithnodejs.R
 import com.appsv.notesappwithnodejs.domain.models.Notes
 import com.appsv.notesappwithnodejs.presentation.add_notes.component.CustomFilterChip
+import org.bson.types.ObjectId
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -45,14 +55,18 @@ private fun Prevv() {
         noteTitle = "Comprehensive Marketing Strategy Meeting with the Entire Sales and Marketing Team",
         noteDescription = "every team . Schedule follow-up meetings to track progress and make adjustments as necessary.",
         notePriority = "High",
+        pinned = false,
         date = "2024-07-07"
-    ))
+    )){
+
+    }
 }
 
 @Composable
 fun NotesCard(
     modifier: Modifier = Modifier,
-    notes : Notes
+    notes : Notes,
+    onPin : (String) -> Unit
 ) {
 
     val chipColor = remember(notes.notePriority) {
@@ -61,6 +75,11 @@ fun NotesCard(
             "High" -> Color.Red
             else -> Color.Green
         }
+    }
+
+    val favouriteIcon = remember(notes.pinned) {
+        if(notes.pinned) R.drawable.baseline_star_24
+        else R.drawable.baseline_star_border_24
     }
 
     Box(
@@ -81,13 +100,30 @@ fun NotesCard(
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ){
+
+                    IconButton(modifier = Modifier.align(Alignment.CenterVertically),
+                        onClick = {
+                            onPin(notes._id)
+                        }) {
+                        Icon(
+                            modifier = Modifier
+                                .size(30.dp)
+                            ,
+                            imageVector = ImageVector.vectorResource(id = favouriteIcon),
+                            contentDescription = "Done icon",
+                            tint = if (notes.pinned) chipColor else colorResource(id = R.color.grey),
+                        )
+                    }
+
                     CustomFilterChip(
                         label = notes.notePriority,
                         color = chipColor,
                         alphaValue = 0.4f,
                         selected =  false){}
+
+
                 }
 
                 Text(
