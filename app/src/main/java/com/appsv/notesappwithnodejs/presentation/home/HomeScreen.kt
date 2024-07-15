@@ -1,5 +1,9 @@
 package com.appsv.notesappwithnodejs.presentation.home
 
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
@@ -7,11 +11,13 @@ import androidx.compose.foundation.lazy.staggeredgrid.items
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -20,25 +26,31 @@ import androidx.navigation.compose.rememberNavController
 import com.appsv.notesappwithnodejs.R
 import com.appsv.notesappwithnodejs.common.components.AppToolBar
 import com.appsv.notesappwithnodejs.domain.models.notesList
+import com.appsv.notesappwithnodejs.presentation.add_notes.component.CustomFilterChip
 import com.appsv.notesappwithnodejs.presentation.home.components.NotesCard
 import com.appsv.notesappwithnodejs.presentation.navhost.AddNoteScreen
 
 
-@Preview(showSystemUi = true)
-@Composable
-private fun Prev() {
-    HomeScreen(navController = rememberNavController())
-}
+//@Preview(showSystemUi = true)
+//@Composable
+//private fun Prev() {
+//    HomeScreen(
+//        navController = rememberNavController(),
+//        state = StateHomeScreen()
+//    )
+//}
 
 
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier,
-    navController: NavHostController
+    navController: NavHostController,
+    state: StateHomeScreen,
+    event : (EventHomeScreen) -> Unit
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(color = colorResource(id = R.color.dark_blue))
     ) {
 
         Column(
@@ -46,28 +58,73 @@ fun HomeScreen(
                 .fillMaxSize()
 
         ) {
-
             AppToolBar(
                 title = "Notes",
             )
 
-            LazyVerticalStaggeredGrid(
-                columns = StaggeredGridCells.Fixed(2),
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(6.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalItemSpacing = 8.dp
-            ) {
-                items(notesList){
-                    NotesCard(notes = it)
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+
+            ){
+                CustomFilterChip(
+                    label = "All",
+                    color = colorResource(id = R.color.light_blue),
+                    selected = state.selectedPriority == "All"
+                ) {
+                    event(EventHomeScreen.SelectedPriority("All"))
+                }
+                CustomFilterChip(
+                    label = "Low",
+                    color = Color.Green,
+                    selected = state.selectedPriority == "Low"
+                ) {
+                    event(EventHomeScreen.SelectedPriority("Low"))
+                }
+                CustomFilterChip(
+                    label = "Medium",
+                    color = Color.Yellow,
+                    selected = state.selectedPriority == "Medium"
+                ) {
+                    event(EventHomeScreen.SelectedPriority("Medium"))
+                }
+                CustomFilterChip(
+                    label = "High",
+                    color = Color.Red,
+                    selected = state.selectedPriority == "High"
+                ) {
+                    event(EventHomeScreen.SelectedPriority("High"))
+                }
+
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            if(isNotesFetched(state)){
+                LazyVerticalStaggeredGrid(
+                    columns = StaggeredGridCells.Fixed(2),
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(6.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalItemSpacing = 8.dp
+                ) {
+                    items(state.fetchedNotes!!) {
+                        NotesCard(notes = it)
+                    }
                 }
             }
+
+
 
         }
 
         FloatingActionButton(
             onClick = {
-                    navController.navigate(AddNoteScreen)
+                navController.navigate(AddNoteScreen)
             },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
@@ -82,3 +139,13 @@ fun HomeScreen(
         }
     }
 }
+
+@Composable
+fun isNotesFetched(state: StateHomeScreen): Boolean {
+    return when {
+        state.gettingNotes -> false
+        state.fetchedNotes!!.isNotEmpty() -> true
+        else -> false
+    }
+}
+

@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 fun provideNotesApi() : NotesAPI{
     return Retrofit.Builder()
-        .baseUrl("http://192.168.100.103:3000")
+        .baseUrl("http://192.168.100.102:3000")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
         .create(NotesAPI::class.java)

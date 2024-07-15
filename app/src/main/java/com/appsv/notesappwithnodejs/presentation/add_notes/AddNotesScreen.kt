@@ -1,6 +1,7 @@
 package com.appsv.notesappwithnodejs.presentation.add_notes
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.appsv.notesappwithnodejs.R
 import com.appsv.notesappwithnodejs.common.components.AppOutlinedTextField
 import com.appsv.notesappwithnodejs.common.components.AppToolBar
@@ -33,11 +35,15 @@ import com.appsv.notesappwithnodejs.presentation.add_notes.component.CustomFilte
 import com.appsv.notesappwithnodejs.presentation.navhost.HomeScreen
 
 
-//@Preview(showSystemUi = true)
-//@Composable
-//private fun Prevv() {
-//    AddNoteScreen(navController)
-//}
+@Preview(showSystemUi = true)
+@Composable
+private fun Prevv() {
+    AddNoteScreen(
+        rememberNavController(),
+        state = StateAddNoteScreen(),
+        event = {}
+    )
+}
 
 @Composable
 fun AddNoteScreen(
@@ -48,6 +54,7 @@ fun AddNoteScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(colorResource(id = R.color.dark_blue))
     ) {
 
         Column {

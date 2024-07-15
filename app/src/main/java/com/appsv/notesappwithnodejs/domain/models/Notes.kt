@@ -5,7 +5,7 @@ data class Notes (
     val noteTitle : String,
     val noteDescription: String,
     val notePriority: String,
-    val date : String  = "24-12-2023"
+    val date : String ?   = null
 )
 
 val notesList = listOf(
