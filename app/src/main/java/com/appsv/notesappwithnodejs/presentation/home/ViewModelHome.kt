@@ -1,6 +1,7 @@
 package com.appsv.notesappwithnodejs.presentation.home
 
 import android.util.Log
+import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.appsv.notesappwithnodejs.common.util.Resource
@@ -9,6 +10,7 @@ import com.appsv.notesappwithnodejs.domain.models.notesList
 import com.appsv.notesappwithnodejs.domain.repository.NotesRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.get
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -46,39 +48,37 @@ class ViewModelHome : ViewModel() , KoinComponent {
                 )
 
                 // save status of pinning
+
                 viewModelScope.launch { notesRepository.pinNotes(id) }
                 searchNotes()
 
-
             }
 
-            EventHomeScreen.FilterNotes -> {
+            is EventHomeScreen.SearchNotes -> {
+                _getNotesState.value = getNotesState.value.copy(searchText = event.text)
+            }
+
+            EventHomeScreen.StartSearchingNotes -> {
                 searchNotes()
-            }
-            is EventHomeScreen.UpdateSearchText -> {
-                _getNotesState.value = getNotesState.value.copy(searchNotes = event.searchText)
             }
         }
     }
 
     private fun searchNotes() {
-        val searchText = getNotesState.value.searchNotes.lowercase()
+        val searchText = getNotesState.value.searchText.lowercase()
 
-        val updatedList = if (searchText.isBlank()) {
-            getNotesState.value.fetchedNotes
-        } else {
-            getNotesState.value.fetchedNotes!!.filter {
-                it.noteTitle.lowercase().contains(searchText) ||
-                        it.noteDescription.lowercase().contains(searchText)||
-                        it.notePriority.lowercase().contains(searchText)
-            }.toMutableList()
+        val searchedNotesList = getNotesState.value.fetchedNotes!!.filter {
+            it.noteTitle.lowercase().contains(searchText) ||
+            it.noteDescription.lowercase().contains(searchText) ||
+            it.notePriority.lowercase().contains(searchText)
         }
 
-        _getNotesState.value = getNotesState.value.copy(searchedNotes = updatedList!!)
+        _getNotesState.value = getNotesState.value.copy(searchedNotes = searchedNotesList)
     }
 
 
     private fun filterNotes(priority: String) {
+
         viewModelScope.launch {
             notesRepository.filterNotes(priority).collect{resource->
                 when(resource){
@@ -89,7 +89,7 @@ class ViewModelHome : ViewModel() , KoinComponent {
                         _getNotesState.value = getNotesState.value.copy(gettingNotes = true)
                     }
                     is Resource.Success ->{
-                        _getNotesState.value = getNotesState.value.copy(fetchedNotes = resource.data!!.sortedByDescending { it.pinned }, gettingNotes = false)
+                        _getNotesState.value = getNotesState.value.copy(fetchedNotes = resource.data!!.sortedByDescending { it.pinned } , gettingNotes = false)
                         searchNotes()
                     }
                 }
@@ -104,7 +104,7 @@ class ViewModelHome : ViewModel() , KoinComponent {
             notesRepository.getNotes().collect{resource->
                 when(resource){
                     is Resource.Success -> {
-                        _getNotesState.value = getNotesState.value.copy(fetchedNotes = resource.data!!.sortedByDescending { it.pinned })
+                        _getNotesState.value = getNotesState.value.copy(fetchedNotes = resource.data!!.sortedByDescending { it.pinned } , gettingNotes = false)
                         searchNotes()
                     }
                     is Resource.Loading ->{
@@ -117,6 +117,7 @@ class ViewModelHome : ViewModel() , KoinComponent {
                 }
             }
         }
+
     }
 
 }

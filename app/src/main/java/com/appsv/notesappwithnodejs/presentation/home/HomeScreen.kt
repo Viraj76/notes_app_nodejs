@@ -53,7 +53,7 @@ private fun Prev() {
 fun HomeScreen(
     navController: NavHostController,
     state: StateHomeScreen,
-    event : (EventHomeScreen) -> Unit
+    event: (EventHomeScreen) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -69,17 +69,16 @@ fun HomeScreen(
             AppToolBar(
                 title = "Notes",
             )
-            Spacer(modifier = Modifier.height(10.dp))
 
             SearchNotes(
-                heroName = state.searchNotes,
-                onHeroNameChanged = {
-                    event(EventHomeScreen.UpdateSearchText(it))
-                })
-            {
-                event(EventHomeScreen.FilterNotes)
-            }
-
+                searchText = state.searchText,
+                onSearchingNotes = { text ->
+                    event(EventHomeScreen.SearchNotes(text))
+                },
+                onExecuteSearch = {
+                    event(EventHomeScreen.StartSearchingNotes)
+                }
+            )
             Spacer(modifier = Modifier.height(10.dp))
 
             Row(
@@ -88,7 +87,7 @@ fun HomeScreen(
                     .padding(start = 10.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
 
-            ){
+                ) {
                 CustomFilterChip(
                     label = "All",
                     color = colorResource(id = R.color.light_blue),
@@ -122,7 +121,7 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            if(isNotesFetched(state = state)){
+            if (isNotesFetched(state = state)) {
                 LazyVerticalStaggeredGrid(
                     columns = StaggeredGridCells.Fixed(2),
                     modifier = Modifier.fillMaxSize(),
@@ -131,13 +130,12 @@ fun HomeScreen(
                     verticalItemSpacing = 8.dp
                 ) {
                     itemsIndexed(state.searchedNotes) { index, note ->
-                        NotesCard(notes = note) {id->
-                            event(EventHomeScreen.PinOrUnpinAndSave(id,index))
+                        NotesCard(notes = note) { id ->
+                            event(EventHomeScreen.PinOrUnpinAndSave(id, index))
                         }
                     }
                 }
             }
-
 
 
         }

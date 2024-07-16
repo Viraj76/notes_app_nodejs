@@ -63,6 +63,7 @@ private fun Prevv() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NotesCard(
     modifier: Modifier = Modifier,
@@ -147,7 +148,7 @@ fun NotesCard(
 
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = notes.date!!,
+                    text = formatTimestampToDDMMYYYY(notes.date!!),
                     color = colorResource(id = R.color.light_blue),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,

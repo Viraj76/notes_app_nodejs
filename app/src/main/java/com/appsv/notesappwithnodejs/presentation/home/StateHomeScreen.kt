@@ -8,6 +8,7 @@ data class StateHomeScreen(
     val fetchedNotes : List<Notes> ?= emptyList(),
     val error : String = "",
     val selectedPriority : String = "All",
-    val searchNotes : String = "",
+    val searchText : String = "",
     val searchedNotes : List<Notes> = emptyList()
+
 )
