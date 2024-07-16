@@ -42,24 +42,43 @@ class ViewModelHome : ViewModel() , KoinComponent {
                         else{
                             notes
                         }
-                    }.sortedWith(
-                        compareByDescending<Notes> { it.pinned }
-                            .thenBy { getPriorityOrder(it.notePriority) }
-                    )
+                    }.sortedByDescending { it.pinned }
                 )
 
                 // save status of pinning
-
                 viewModelScope.launch { notesRepository.pinNotes(id) }
+                searchNotes()
 
 
+            }
 
+            EventHomeScreen.FilterNotes -> {
+                searchNotes()
+            }
+            is EventHomeScreen.UpdateSearchText -> {
+                _getNotesState.value = getNotesState.value.copy(searchNotes = event.searchText)
             }
         }
     }
 
-    private fun filterNotes(priority: String) {
+    private fun searchNotes() {
+        val searchText = getNotesState.value.searchNotes.lowercase()
 
+        val updatedList = if (searchText.isBlank()) {
+            getNotesState.value.fetchedNotes
+        } else {
+            getNotesState.value.fetchedNotes!!.filter {
+                it.noteTitle.lowercase().contains(searchText) ||
+                        it.noteDescription.lowercase().contains(searchText)||
+                        it.notePriority.lowercase().contains(searchText)
+            }.toMutableList()
+        }
+
+        _getNotesState.value = getNotesState.value.copy(searchedNotes = updatedList!!)
+    }
+
+
+    private fun filterNotes(priority: String) {
         viewModelScope.launch {
             notesRepository.filterNotes(priority).collect{resource->
                 when(resource){
@@ -70,10 +89,8 @@ class ViewModelHome : ViewModel() , KoinComponent {
                         _getNotesState.value = getNotesState.value.copy(gettingNotes = true)
                     }
                     is Resource.Success ->{
-                        _getNotesState.value = getNotesState.value.copy(fetchedNotes = resource.data!!.sortedWith(
-                            compareByDescending<Notes> { it.pinned }
-                                .thenBy { getPriorityOrder(it.notePriority) }
-                        ) , gettingNotes = false)
+                        _getNotesState.value = getNotesState.value.copy(fetchedNotes = resource.data!!.sortedByDescending { it.pinned }, gettingNotes = false)
+                        searchNotes()
                     }
                 }
             }
@@ -87,10 +104,8 @@ class ViewModelHome : ViewModel() , KoinComponent {
             notesRepository.getNotes().collect{resource->
                 when(resource){
                     is Resource.Success -> {
-                        _getNotesState.value = getNotesState.value.copy(fetchedNotes = resource.data!!.sortedWith(
-                            compareByDescending<Notes> { it.pinned }
-                                .thenBy { getPriorityOrder(it.notePriority) }
-                        ) , gettingNotes = false)
+                        _getNotesState.value = getNotesState.value.copy(fetchedNotes = resource.data!!.sortedByDescending { it.pinned })
+                        searchNotes()
                     }
                     is Resource.Loading ->{
                         _getNotesState.value = getNotesState.value.copy(gettingNotes = true)
@@ -102,7 +117,6 @@ class ViewModelHome : ViewModel() , KoinComponent {
                 }
             }
         }
-
     }
 
 }

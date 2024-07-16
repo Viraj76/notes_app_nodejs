@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
@@ -31,6 +32,7 @@ import com.appsv.notesappwithnodejs.common.components.AppToolBar
 import com.appsv.notesappwithnodejs.domain.models.notesList
 import com.appsv.notesappwithnodejs.presentation.add_notes.component.CustomFilterChip
 import com.appsv.notesappwithnodejs.presentation.home.components.NotesCard
+import com.appsv.notesappwithnodejs.presentation.home.components.SearchNotes
 import com.appsv.notesappwithnodejs.presentation.navhost.AddNoteScreen
 import kotlinx.coroutines.launch
 
@@ -46,6 +48,7 @@ private fun Prev() {
 }
 
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HomeScreen(
     navController: NavHostController,
@@ -66,6 +69,16 @@ fun HomeScreen(
             AppToolBar(
                 title = "Notes",
             )
+            Spacer(modifier = Modifier.height(10.dp))
+
+            SearchNotes(
+                heroName = state.searchNotes,
+                onHeroNameChanged = {
+                    event(EventHomeScreen.UpdateSearchText(it))
+                })
+            {
+                event(EventHomeScreen.FilterNotes)
+            }
 
             Spacer(modifier = Modifier.height(10.dp))
 
@@ -117,7 +130,7 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalItemSpacing = 8.dp
                 ) {
-                    itemsIndexed(state.fetchedNotes!!) { index, note ->
+                    itemsIndexed(state.searchedNotes) { index, note ->
                         NotesCard(notes = note) {id->
                             event(EventHomeScreen.PinOrUnpinAndSave(id,index))
                         }
