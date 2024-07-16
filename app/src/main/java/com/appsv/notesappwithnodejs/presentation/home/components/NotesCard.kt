@@ -51,6 +51,7 @@ import kotlin.random.Random
 @Preview
 @Composable
 private fun Prevv() {
+
     NotesCard(notes = Notes(
         noteTitle = "Comprehensive Marketing Strategy Meeting with the Entire Sales and Marketing Team",
         noteDescription = "every team . Schedule follow-up meetings to track progress and make adjustments as necessary.",
@@ -103,7 +104,8 @@ fun NotesCard(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ){
 
-                    IconButton(modifier = Modifier.align(Alignment.CenterVertically),
+                    IconButton(
+                        modifier = Modifier.align(Alignment.CenterVertically),
                         onClick = {
                             onPin(notes._id)
                         }) {
@@ -112,7 +114,7 @@ fun NotesCard(
                                 .size(30.dp)
                             ,
                             imageVector = ImageVector.vectorResource(id = favouriteIcon),
-                            contentDescription = "Done icon",
+                            contentDescription = "Star icon",
                             tint = if (notes.pinned) chipColor else colorResource(id = R.color.grey),
                         )
                     }
@@ -122,8 +124,6 @@ fun NotesCard(
                         color = chipColor,
                         alphaValue = 0.4f,
                         selected =  false){}
-
-
                 }
 
                 Text(

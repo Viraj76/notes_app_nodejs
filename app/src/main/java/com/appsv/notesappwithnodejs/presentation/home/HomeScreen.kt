@@ -35,14 +35,15 @@ import com.appsv.notesappwithnodejs.presentation.navhost.AddNoteScreen
 import kotlinx.coroutines.launch
 
 
-//@Preview(showSystemUi = true)
-//@Composable
-//private fun Prev() {
-//    HomeScreen(
-//        navController = rememberNavController(),
-//        state = StateHomeScreen()
-//    )
-//}
+@Preview(showSystemUi = true)
+@Composable
+private fun Prev() {
+    HomeScreen(
+        navController = rememberNavController(),
+        state = StateHomeScreen(),
+        event = {}
+    )
+}
 
 
 @Composable
@@ -117,9 +118,8 @@ fun HomeScreen(
                     verticalItemSpacing = 8.dp
                 ) {
                     itemsIndexed(state.fetchedNotes!!) { index, note ->
-                        NotesCard(notes = note) {
-                            // You can use the index here
-                            event(EventHomeScreen.OnPin(note._id , index))
+                        NotesCard(notes = note) {id->
+                            event(EventHomeScreen.PinOrUnpinAndSave(id,index))
                         }
                     }
                 }

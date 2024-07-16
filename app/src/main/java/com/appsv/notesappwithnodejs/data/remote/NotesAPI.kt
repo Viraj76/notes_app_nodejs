@@ -23,6 +23,8 @@ interface NotesAPI {
     ) : Response<List<Notes>>
 
     @PUT("/notes/{id}/update-pin")
-    suspend fun updateNotePin(@Path("id") id: String) // Replace 'Note' with your actual response model
+    suspend fun pinNotes(
+        @Path("id") id : String
+    )
 
 }

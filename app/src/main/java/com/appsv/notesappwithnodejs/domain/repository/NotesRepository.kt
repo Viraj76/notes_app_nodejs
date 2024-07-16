@@ -15,6 +15,5 @@ interface NotesRepository {
 
       suspend fun pinNotes(id : String)
 
-
 }
 

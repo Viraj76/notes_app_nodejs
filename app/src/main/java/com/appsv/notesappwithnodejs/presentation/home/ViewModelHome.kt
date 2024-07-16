@@ -18,6 +18,10 @@ class ViewModelHome : ViewModel() , KoinComponent {
     private val _getNotesState = MutableStateFlow(StateHomeScreen())
     val getNotesState = _getNotesState
 
+    init {
+        getNotes()
+    }
+
     fun onEvent(event : EventHomeScreen){
         when(event){
             is EventHomeScreen.SelectedPriority -> {
@@ -25,27 +29,32 @@ class ViewModelHome : ViewModel() , KoinComponent {
                 filterNotes(event.priority)
             }
 
-            is EventHomeScreen.OnPin -> {
+            is EventHomeScreen.PinOrUnpinAndSave -> {
                 val id = event.id
                 val index = event.index
-                Log.d("NoteId" , id)
-                // Update state based on index
-                _getNotesState.value = getNotesState.value.copy(
-                    fetchedNotes = getNotesState.value.fetchedNotes!!.mapIndexed { currentIndex, note ->
-                        if (currentIndex == index) {
-                            // Toggle pin state for the note at the specified index
-                            note.copy(pinned = !note.pinned)
-                        } else {
-                            note
-                        }
-                    }.sortedWith(compareByDescending<Notes> { it.pinned }
-                        .thenBy { if (it.notePriority == "High") 0 else if (it.notePriority == "Medium") 1 else 2 })
 
+                // pin or unpin
+                _getNotesState.value = getNotesState.value.copy(
+                    fetchedNotes = getNotesState.value.fetchedNotes!!.mapIndexed{currentIndex, notes ->
+                        if(index == currentIndex){
+                            notes.copy(pinned = !notes.pinned)
+                        }
+                        else{
+                            notes
+                        }
+                    }.sortedWith(
+                        compareByDescending<Notes> { it.pinned }
+                            .thenBy { getPriorityOrder(it.notePriority) }
+                    )
                 )
 
-                viewModelScope.launch { notesRepository.pinNotes(id) }
-            }
+                // save status of pinning
 
+                viewModelScope.launch { notesRepository.pinNotes(id) }
+
+
+
+            }
         }
     }
 
@@ -61,8 +70,10 @@ class ViewModelHome : ViewModel() , KoinComponent {
                         _getNotesState.value = getNotesState.value.copy(gettingNotes = true)
                     }
                     is Resource.Success ->{
-                        _getNotesState.value = getNotesState.value.copy(fetchedNotes = resource.data!!.sortedWith(compareByDescending<Notes> { it.pinned }
-                            .thenBy { if (it.notePriority == "High") 0 else if (it.notePriority == "Medium") 1 else 2 }) , gettingNotes = false)
+                        _getNotesState.value = getNotesState.value.copy(fetchedNotes = resource.data!!.sortedWith(
+                            compareByDescending<Notes> { it.pinned }
+                                .thenBy { getPriorityOrder(it.notePriority) }
+                        ) , gettingNotes = false)
                     }
                 }
             }
@@ -70,17 +81,16 @@ class ViewModelHome : ViewModel() , KoinComponent {
 
     }
 
-    init {
-        getNotes()
-    }
 
     private fun getNotes() {
         viewModelScope.launch {
             notesRepository.getNotes().collect{resource->
                 when(resource){
                     is Resource.Success -> {
-                        _getNotesState.value = getNotesState.value.copy(fetchedNotes = resource.data!!.sortedWith(compareByDescending<Notes> { it.pinned }
-                            .thenBy { if (it.notePriority == "High") 0 else if (it.notePriority == "Medium") 1 else 2 }) , gettingNotes = false)
+                        _getNotesState.value = getNotesState.value.copy(fetchedNotes = resource.data!!.sortedWith(
+                            compareByDescending<Notes> { it.pinned }
+                                .thenBy { getPriorityOrder(it.notePriority) }
+                        ) , gettingNotes = false)
                     }
                     is Resource.Loading ->{
                         _getNotesState.value = getNotesState.value.copy(gettingNotes = true)
@@ -97,3 +107,11 @@ class ViewModelHome : ViewModel() , KoinComponent {
 
 }
 
+private fun getPriorityOrder(priority: String): Int {
+    return when (priority) {
+        "High" -> 0
+        "Medium" -> 1
+        "Low" -> 2
+        else -> 3
+    }
+}
