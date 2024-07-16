@@ -4,7 +4,7 @@ import org.bson.types.ObjectId
 
 
 data class Notes (
-    val _id :String = "",
+    val _id :String ?= null,
     val noteTitle : String,
     val noteDescription: String,
     val notePriority: String,

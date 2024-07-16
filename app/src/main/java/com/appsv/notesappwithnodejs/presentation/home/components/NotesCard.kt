@@ -48,6 +48,7 @@ import java.time.format.DateTimeFormatter
 import kotlin.random.Random
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 private fun Prevv() {
@@ -108,7 +109,7 @@ fun NotesCard(
                     IconButton(
                         modifier = Modifier.align(Alignment.CenterVertically),
                         onClick = {
-                            onPin(notes._id)
+                            onPin(notes._id!!)
                         }) {
                         Icon(
                             modifier = Modifier
