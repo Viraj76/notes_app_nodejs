@@ -1,6 +1,5 @@
 package com.appsv.notesappwithnodejs.domain.models
 
-import org.bson.types.ObjectId
 
 
 data class Notes (
